@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
     
     float obj, amb;
     tempConvert(rawObjTemp, rawAmbTemp, &obj, &amb);
-    printf("Object: %.2f\nAmbient: %.2f\n", obj, amb);
+    printf("Object: %.1f\nAmbient: %.1f\n", obj, amb);
     
     return EXIT_SUCCESS;
 }

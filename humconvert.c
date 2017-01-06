@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
     
     float temp, hum;
     humConvert(rawTemp, rawHum, &temp, &hum);
-    printf("Temperature: %.2f\nHumidity: %.2f\n", temp, hum);
+    printf("Temperature: %.1f\nHumidity: %.1f\n", temp, hum);
     
     return EXIT_SUCCESS;
 }
