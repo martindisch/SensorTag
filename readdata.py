@@ -41,8 +41,8 @@ try:
         rawHum = int ('0x' + bytes[3] + bytes[2], 16)
         resultsHum = humConvert(rawTemp, rawHum)
         print "\033[3A"
-        print "Obj: {:.1f} Amb: {:.1f}".format(resultsTemp[0], resultsTemp[1])
-        print "Tmp: {:.1f} Hum: {:.1f}".format(resultsHum[0], resultsHum[1])
+        print "Obj: {:<5.1f} Amb: {:<5.1f}".format(resultsTemp[0], resultsTemp[1])
+        print "Tmp: {:<5.1f} Hum: {:<5.1f}".format(resultsHum[0], resultsHum[1])
         time.sleep(1)
 finally:
     adapter.stop()
