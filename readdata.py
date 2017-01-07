@@ -1,14 +1,18 @@
 import pygatt
 import time
 
-def tempConvert(rawObjTemp, rawAmbTemp):
+def tempConvert(rawTemp):
     SCALE_LSB = 0.03125
-    t = rawObjTemp >> 2
-    obj = t * SCALE_LSB
-    t = rawAmbTemp >> 2
-    amb = t * SCALE_LSB
-    return [obj, amb]
-    
+    # mask to fill in leading ones after bitshift if number is negative
+    mask = 0xc000 if rawTemp > 0x7fff else 0x0000
+    # right-shift by two and fill in leading ones if necessary
+    t = rawTemp >> 2 | mask
+    # convert to negative number if necessary
+    if t > 0x7fff:
+        t = -(t ^ 0xffff) + 1
+    temp = t * SCALE_LSB
+    return temp
+
 def humConvert(rawTemp, rawHum):
     temp = (float(rawTemp) / 65536) * 165 - 40
     hum = (float(rawHum) / 65536) * 100
@@ -34,14 +38,15 @@ try:
         for x in valueTemp: bytes.append("{:02x}".format(x))
         rawObjTemp = int('0x' + bytes[1] + bytes[0], 16)
         rawAmbTemp = int('0x' + bytes[3] + bytes[2], 16)
-        resultsTemp = tempConvert(rawObjTemp, rawAmbTemp)
+        objTemp = tempConvert(rawObjTemp)
+        ambTemp = tempConvert(rawAmbTemp)
         bytes = []
         for x in valueHum: bytes.append("{:02x}".format(x))
         rawTemp = int ('0x' + bytes[1] + bytes[0], 16)
         rawHum = int ('0x' + bytes[3] + bytes[2], 16)
         resultsHum = humConvert(rawTemp, rawHum)
         print "\033[3A"
-        print "Obj: {:<5.1f} Amb: {:<5.1f}".format(resultsTemp[0], resultsTemp[1])
+        print "Obj: {:<5.1f} Amb: {:<5.1f}".format(objTemp, ambTemp)
         print "Tmp: {:<5.1f} Hum: {:<5.1f}".format(resultsHum[0], resultsHum[1])
         time.sleep(1)
 finally:

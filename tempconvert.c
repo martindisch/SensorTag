@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 
-void tempConvert(uint16_t rawObjTemp, uint16_t rawAmbTemp,
+void tempConvert(int16_t rawObjTemp, int16_t rawAmbTemp,
                  float *tObj, float *tAmb) {
     const float SCALE_LSB = 0.03125;
     float t;
