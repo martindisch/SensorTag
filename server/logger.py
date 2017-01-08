@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pygatt
 import time
 import cPickle as pickle
@@ -60,19 +58,9 @@ try:
         
         # prepare latest data
         temp = (ambTemp + resultsHum[0]) / 2    # take temperature mean
-        latest = {
-            "time": dateTime(),
-            "temperature": {
-                "value": temp,
-                "unit_desc": "degrees Celsius",
-                "unit_str": " °C"
-            },
-            "humidity": {
-                "value": resultsHum[1],
-                "unit_desc": "relative humidity",
-                "unit_str": "%"
-            }
-        }
+        latest = [
+            dateTime(), temp, resultsHum[1]
+        ]
         
         # dump in latest
         with open("latest.p", 'w') as f:
