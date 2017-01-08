@@ -10,7 +10,8 @@ urls = (
 class latest:
     def GET(self):
         try:
-            latest = pickle.load(open("latest.p", "r"))
+            with open("latest.p", 'r') as f:
+                latest = pickle.load(f)
             return json.dumps(latest)
         except:
             return "Could not read latest data"
@@ -18,7 +19,8 @@ class latest:
 class history:
     def GET(self):
         try:
-            history = pickle.load(open("history.p", "r"))
+            with open("history.p", 'r') as f:
+                history = pickle.load(f)
             return json.dumps(history)
         except:
             return "Could not read historic data"
