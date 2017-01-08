@@ -1,3 +1,7 @@
 # binaries
 tempconvert
 humconvert
+*.pyc
+
+# pickle data
+*.p
