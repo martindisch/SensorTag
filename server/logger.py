@@ -74,6 +74,6 @@ try:
         with open("history.csv", 'a') as f:
             f.write(toCSV(latest))
         
-        time.sleep(5)
+        time.sleep(60)
 finally:
     adapter.stop()
