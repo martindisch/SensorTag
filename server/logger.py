@@ -1,7 +1,5 @@
 import pygatt
 import time
-import cPickle as pickle
-import os
 
 def tempConvert(rawTemp):
     SCALE_LSB = 0.03125
@@ -22,6 +20,12 @@ def humConvert(rawTemp, rawHum):
 
 def dateTime():
     return time.strftime("%Y/%m/%d %H:%M:%S")
+
+def toCSV(list):
+    line = ""
+    for item in list:
+        line += str(item) + ","
+    return line[:-1] + "\n"
 
 MAC = '24:71:89:BC:84:84'
 adapter = pygatt.GATTToolBackend()
@@ -59,21 +63,16 @@ try:
         # prepare latest data
         temp = (ambTemp + resultsHum[0]) / 2    # take temperature mean
         latest = [
-            dateTime(), temp, resultsHum[1]
+            dateTime(), round(temp, 2), round(resultsHum[1], 2)
         ]
         
         # dump in latest
-        with open("latest.p", 'w') as f:
-            pickle.dump(latest, f)
+        with open("latest.csv", 'w') as f:
+            f.write(toCSV(latest))
         
         # dump in history
-        history = []
-        if os.path.exists("history.p"):
-            with open("history.p", 'r') as f:
-                history = pickle.load(f)
-        with open("history.p", 'w') as f:
-            history.append(latest)
-            pickle.dump(history, f)
+        with open("history.csv", 'a') as f:
+            f.write(toCSV(latest))
         
         time.sleep(5)
 finally:

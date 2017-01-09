@@ -1,19 +1,12 @@
 import web
-import cPickle as pickle
 import json
 
 def dictify(timeTempHum):
-    package = {
-        "time": timeTempHum[0],
-        "temperature": {
-            "value": timeTempHum[1],
-            "unit": "degrees Celsius"
-        },
-        "humidity": {
-            "value": timeTempHum[2],
-            "unit": "relative humidity"
-        }
-    }
+    package = [
+        timeTempHum[0],
+        timeTempHum[1],
+        timeTempHum[2]
+    ]
     return package
 
 urls = (
@@ -24,8 +17,8 @@ urls = (
 class latest:
     def GET(self):
         try:
-            with open("latest.p", 'r') as f:
-                timeTempHum = pickle.load(f)
+            with open("latest.csv", 'r') as f:
+                timeTempHum = f.readlines()[0].strip("\n").split(",")
             package = dictify(timeTempHum)
             return json.dumps(package)
         except:
@@ -34,10 +27,11 @@ class latest:
 class history:
     def GET(self):
         try:
-            with open("history.p", 'r') as f:
-                history = pickle.load(f)
+            with open("history.csv", 'r') as f:
+                lines = [x.strip("\n") for x in f.readlines()]
             package = []
-            for timeTempHum in history:
+            for line in lines:
+                timeTempHum = line.split(",")
                 package.append(dictify(timeTempHum))
             return json.dumps(package)
         except:

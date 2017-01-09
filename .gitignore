@@ -3,5 +3,5 @@ tempconvert
 humconvert
 *.pyc
 
-# pickle data
-*.p
+# CSV data
+*.csv
