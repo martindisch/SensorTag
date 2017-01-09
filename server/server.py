@@ -30,6 +30,8 @@ class history:
             with open("history.csv", 'r') as f:
                 lines = [x.strip("\n") for x in f.readlines()]
             package = []
+            # limit to approximately 2 MB of transmitted JSON
+            lines = lines[-48770:]
             for line in lines:
                 timeTempHum = line.split(",")
                 package.append(dictify(timeTempHum))
