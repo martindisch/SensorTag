@@ -1,4 +1,3 @@
 #!/bin/bash
 
-python logger.py
-exec bash
+while true; do python logger.py; done
