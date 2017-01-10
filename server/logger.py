@@ -61,7 +61,7 @@ try:
         print "Tmp: {:<5.1f} Hum: {:<5.1f}".format(resultsHum[0], resultsHum[1])
         
         # prepare latest data
-        temp = (ambTemp + resultsHum[0]) / 2    # take temperature mean
+        temp = ambTemp
         latest = [
             dateTime(), round(temp, 2), round(resultsHum[1], 2)
         ]
