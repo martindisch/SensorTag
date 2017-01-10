@@ -63,7 +63,7 @@ try:
         # prepare latest data
         temp = ambTemp
         latest = [
-            dateTime(), round(temp, 2), round(resultsHum[1], 2)
+            dateTime(), format(temp, ".2f"), format(resultsHum[1], ".2f")
         ]
         
         # dump in latest
