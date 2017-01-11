@@ -27,7 +27,8 @@ def toCSV(list):
         line += str(item) + ","
     return line[:-1] + "\n"
 
-MAC = '24:71:89:BC:84:84'
+with open("mac.txt", 'r') as f:
+    MAC = f.readlines()[0].strip("\n")
 adapter = pygatt.GATTToolBackend()
 
 try:

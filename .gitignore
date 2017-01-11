@@ -5,3 +5,6 @@ humconvert
 
 # CSV data
 *.csv
+
+# MAC address
+mac.txt
