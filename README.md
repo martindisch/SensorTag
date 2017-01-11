@@ -1,6 +1,8 @@
 # SensorTag
 Some code I wrote while testing the Texas Instruments CC2650STK SensorTag.
 
+**Disclaimer:** I'm running SensorTag firmware 1.32, it may not work with other versions.
+
 ## Components
 ### C programs
 `util/tempconvert.c` and `util/humconvert.c` are two small programs that convert the output you would get by manually reading the data characteristics of the temperature and humidity sensor using `gatttool`. They are used by passing the output like `./tempconvert.c e0 08 48 0c`, where the output is in the format `Object[0:7] Object[8:15] Ambience[0:7] Ambience[8:15]`.
