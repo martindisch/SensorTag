@@ -1,5 +1,6 @@
 package com.martindisch.weather;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 fetchData();
             }
         });
+        mSwipeContainer.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorAccent));
 
         fetchData();
     }
