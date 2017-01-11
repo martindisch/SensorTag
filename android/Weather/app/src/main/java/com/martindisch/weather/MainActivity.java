@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         mHistory = (TextView) findViewById(R.id.tvHistory);
 
         AsyncHttpClient client = new AsyncHttpClient();
+        client.setMaxRetriesAndTimeout(1, 500);
         client.get("http://" + getString(R.string.IP) + "/history", new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
