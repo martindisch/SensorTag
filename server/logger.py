@@ -32,7 +32,7 @@ adapter = pygatt.GATTToolBackend()
 
 try:
     adapter.start()
-    print "Connecting to " + MAC
+    print dateTime() + " - Connecting to " + MAC
     device = adapter.connect(MAC)
     print "Connected. Enabling sensors"
     device.char_write('f000aa02-0451-4000-b000-000000000000', bytearray([0x01]))
