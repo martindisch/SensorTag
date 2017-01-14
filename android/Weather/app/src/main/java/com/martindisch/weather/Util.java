@@ -1,7 +1,6 @@
 package com.martindisch.weather;
 
 import android.util.JsonReader;
-import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
