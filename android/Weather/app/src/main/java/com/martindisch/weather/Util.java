@@ -59,4 +59,17 @@ public class Util {
         return results;
     }
 
+    /**
+     * Takes a time of the form "2017/01/13 14:39:37" and returns a time
+     * of the form "13.01. 14:39".
+     *
+     * @param longTime the original time, e.g. "2017/01/13 14:39:37"
+     * @return the newly formatted time "13.01. 14:39"
+     */
+    public static String shortenTime(String longTime) {
+        return longTime.substring(8, 10) + "." +
+                longTime.substring(5, 7) + ". " +
+                longTime.substring(11, 16);
+    }
+
 }

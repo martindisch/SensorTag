@@ -1,5 +1,6 @@
 package com.martindisch.weather;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -7,6 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -17,8 +25,9 @@ import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mLatestTemp, mLatestHum, mHistory;
+    private TextView mLatestTemp, mLatestHum;
     private SwipeRefreshLayout mSwipeContainer;
+    private LineChart mChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +36,18 @@ public class MainActivity extends AppCompatActivity {
 
         mLatestTemp = (TextView) findViewById(R.id.tvLatestTemp);
         mLatestHum = (TextView) findViewById(R.id.tvLatestHum);
-        mHistory = (TextView) findViewById(R.id.tvHistory);
         mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        mChart = (LineChart) findViewById(R.id.chart);
+
+        mChart.setDescription(null);
+        mChart.setScaleYEnabled(false);
+        mChart.setHighlightPerDragEnabled(false);
+        mChart.setHighlightPerTapEnabled(false);
+        mChart.getLegend().setDrawInside(true);
+        mChart.setExtraTopOffset(10);
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setLabelRotationAngle(-90);
+        xAxis.setLabelCount(10);
 
         mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -53,19 +72,40 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-                            ArrayList<String[]> history = Util.parseHistory(responseBody);
+                            final ArrayList<String[]> history = Util.parseHistory(responseBody);
                             final String[] latest = history.get(history.size() - 1);
-                            String history_out = "";
+                            ArrayList<Entry> temperature = new ArrayList<>(history.size());
+                            ArrayList<Entry> humidity = new ArrayList<>(history.size());
+
+                            float counter = 0;
                             for (String[] current : history) {
-                                history_out += current[0] + ":" + String.format(getString(R.string.format_both), current[1], current[2]) + "\n";
+                                temperature.add(new Entry(counter++, Float.parseFloat(current[1])));
+                                humidity.add(new Entry(counter, Float.parseFloat(current[2])));
                             }
-                            final String h = history_out;
+
+                            LineDataSet tempSet = new LineDataSet(temperature, getString(R.string.temperature));
+                            tempSet.setDrawCircles(false);
+                            tempSet.setColor(Color.RED);
+                            LineDataSet humSet = new LineDataSet(humidity, getString(R.string.humidity));
+                            humSet.setDrawCircles(false);
+                            humSet.setColor(Color.BLUE);
+
+                            final LineData lineData = new LineData(tempSet, humSet);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     mLatestTemp.setText(String.format(getString(R.string.format_temp), latest[1]));
                                     mLatestHum.setText(String.format(getString(R.string.format_hum), latest[2]));
-                                    mHistory.setText(h);
+
+                                    IAxisValueFormatter formatter = new IAxisValueFormatter() {
+                                        @Override
+                                        public String getFormattedValue(float value, AxisBase axis) {
+                                            return Util.shortenTime(history.get((int) value)[0]);
+                                        }
+                                    };
+                                    mChart.getXAxis().setValueFormatter(formatter);
+                                    mChart.setData(lineData);
+                                    mChart.invalidate();
                                 }
                             });
                         } catch (IOException e) {
