@@ -7,4 +7,5 @@
     <string name="latest">Aktuelle Daten</string>
     <string name="humidity">Luftfeuchtigkeit (% relativ)</string>
     <string name="temperature">Temperatur (°C)</string>
+    <string name="refresh">Aktualisieren</string>
 </resources>

@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,22 +43,17 @@ public class MainActivity extends AppCompatActivity {
         mChart = (LineChart) findViewById(R.id.chart);
 
         mChart.setDescription(null);
-        mChart.setScaleYEnabled(false);
         mChart.setHighlightPerDragEnabled(false);
         mChart.setHighlightPerTapEnabled(false);
+        mChart.setPinchZoom(true);
         mChart.getLegend().setDrawInside(true);
         mChart.setExtraTopOffset(10);
         XAxis xAxis = mChart.getXAxis();
         xAxis.setLabelRotationAngle(-90);
         xAxis.setLabelCount(10);
 
-        mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                fetchData();
-            }
-        });
         mSwipeContainer.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorAccent));
+        mSwipeContainer.setEnabled(false);
 
         fetchData();
     }
@@ -134,5 +132,22 @@ public class MainActivity extends AppCompatActivity {
                 mSwipeContainer.setRefreshing(false);
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                fetchData();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }
