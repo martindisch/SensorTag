@@ -100,7 +100,8 @@ public class MainActivity extends AppCompatActivity {
                                     IAxisValueFormatter formatter = new IAxisValueFormatter() {
                                         @Override
                                         public String getFormattedValue(float value, AxisBase axis) {
-                                            return Util.shortenTime(history.get((int) value)[0]);
+                                            int xValue = value >= history.size() ? history.size() - 1 : (int) value;
+                                            return Util.shortenTime(history.get(xValue)[0]);
                                         }
                                     };
                                     mChart.getXAxis().setValueFormatter(formatter);
