@@ -41,6 +41,9 @@ try:
     print "Sensors enabled. Starting measurements"
     time.sleep(2)
     print "\n"
+    # initialize variable to store last valid humidity reading
+    lastHum = -1
+    
     while True:
         valueTemp = device.char_read('f000aa01-0451-4000-b000-000000000000')
         valueHum = device.char_read('f000aa21-0451-4000-b000-000000000000')
@@ -63,8 +66,13 @@ try:
         
         # prepare latest data
         temp = ambTemp
+        humidity = resultsHum[1]
+        # check if we have an erroneous humidity reading
+        if lastHum > -1 and humidity > 99 and humidity - lastHum > 5:
+            humidity = lastHum
+        lastHum = humidity
         latest = [
-            dateTime(), format(temp, ".2f"), format(resultsHum[1], ".2f")
+            dateTime(), format(temp, ".2f"), format(humidity, ".2f")
         ]
         
         # dump in latest
