@@ -54,7 +54,11 @@ public class MainActivity extends AppCompatActivity {
 
         mSwipeContainer.setColorSchemeColors(ContextCompat.getColor(this, R.color.colorAccent));
         mSwipeContainer.setEnabled(false);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         fetchData();
     }
 
