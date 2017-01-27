@@ -8,4 +8,8 @@
     <string name="humidity">Luftfeuchtigkeit (% relativ)</string>
     <string name="temperature">Temperatur (°C)</string>
     <string name="refresh">Aktualisieren</string>
+    <string name="timeframe">Zeitfenster</string>
+    <string name="all">Komplett</string>
+    <string name="day">24 Stunden</string>
+    <string name="week">7 Tage</string>
 </resources>

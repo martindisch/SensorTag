@@ -54,7 +54,43 @@
                 android:id="@+id/chart"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:layout_below="@id/tvHistoricTitle" />
+                android:layout_below="@id/tvHistoricTitle"
+                android:layout_marginBottom="@dimen/activity_vertical_margin" />
+
+            <TextView
+                android:id="@+id/tvTimeframe"
+                style="@style/TextAppearance.AppCompat.Headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/chart"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:text="@string/timeframe" />
+
+            <RadioGroup
+                android:id="@+id/rgTimeframe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvTimeframe"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rbAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/all" />
+
+                <RadioButton
+                    android:id="@+id/rbWeek"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/week" />
+
+                <RadioButton
+                    android:id="@+id/rbDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/day" />
+            </RadioGroup>
         </RelativeLayout>
 
     </ScrollView>
