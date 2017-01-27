@@ -34,6 +34,15 @@
                 android:text="@string/none" />
 
             <TextView
+                android:id="@+id/tvLatestOld"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@id/tvLatestTitle"
+                android:gravity="right"
+                android:text="Sensors not active\ndata from 2017-08-23 08:45" />
+
+            <TextView
                 android:id="@+id/tvLatestHum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

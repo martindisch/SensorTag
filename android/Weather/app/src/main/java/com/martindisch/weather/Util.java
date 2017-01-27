@@ -5,7 +5,11 @@ import android.util.JsonReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Contains utility functions for result parsing.
@@ -70,6 +74,13 @@ public class Util {
         return longTime.substring(8, 10) + "." +
                 longTime.substring(5, 7) + ". " +
                 longTime.substring(11, 16);
+    }
+
+    public static boolean olderThan5(String time) throws ParseException {
+        DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date latest = format.parse(time);
+        // TODO: implement
+        return false;
     }
 
 }
