@@ -1,6 +1,7 @@
 # binaries
 tempconvert
 humconvert
+replace
 *.pyc
 
 # CSV data
