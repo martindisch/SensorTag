@@ -1,5 +1,6 @@
 import pygatt
 import time
+import os.path
 
 def tempConvert(rawTemp):
     SCALE_LSB = 0.03125
@@ -43,6 +44,11 @@ try:
     print "\n"
     # initialize variable to store last valid humidity reading
     lastHum = -1
+    # attempt to load previous humidity reading
+    if os.path.isfile("latest.csv"):
+        with open("latest.csv", 'r') as f:
+            timeTempHum = f.readlines()[0].strip("\n").split(",")
+            lastHum = timeTempHum[2]
     
     while True:
         valueTemp = device.char_read('f000aa01-0451-4000-b000-000000000000')
