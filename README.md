@@ -23,9 +23,10 @@ Both the logger and server can be started by using `server/start.sh`, which crea
 `android/Weather` is an Android app using the service provided by the server to get and display current and historical data. The IP and port of the server are stored in the untracked string value file `creds.xml` as the string `R.string.IP` in order not to show up in VCS.
 
 ## Libraries
-This project uses the following libraries..
+This project uses the following libraries
 * [pygatt](https://github.com/peplin/pygatt)
 * [android-async-http](https://github.com/loopj/android-async-http)
+* [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart)
 * Android AppCompat and Support Library
 
 ## License
