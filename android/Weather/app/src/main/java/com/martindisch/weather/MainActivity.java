@@ -94,6 +94,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fetchAndUpdate(false);
     }
 
+    /**
+     * Gets data from the server (either whole history or only latest data depending on parameter
+     * and calls the respective update method to display it.
+     *
+     * @param all whether to get whole history (true) or only latest data (false)
+     */
     private void fetchAndUpdate(final boolean all) {
         mSwipeContainer.setRefreshing(true);
         AsyncHttpClient client = new AsyncHttpClient();
@@ -117,6 +123,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    /**
+     * Receives the server's response (full history), parses it, and displays the latest data as
+     * well as the graph.
+     *
+     * @param responseBody the server's response
+     * @param timeframe    the timeframe to show in the graph, one of<br/>
+     *                     ALL = 0<br/>
+     *                     WEEK = 1<br/>
+     *                     DAY = 2
+     */
     private void updateAll(final byte[] responseBody, final int timeframe) {
         new Thread(new Runnable() {
             @Override
@@ -186,6 +202,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }).start();
     }
 
+    /**
+     * Receives the server's response (latest data), parses and displays it.
+     *
+     * @param responseBody the server's response
+     */
     private void updateLatest(final byte[] responseBody) {
         try {
             String[] latest = Util.parseEntry(responseBody);
