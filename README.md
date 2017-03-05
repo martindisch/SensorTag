@@ -14,6 +14,9 @@ Some code I wrote while testing the Texas Instruments CC2650STK SensorTag.
 This functionality consists of 3 parts.
 #### logger
 `server/logger.py` connects to the SensorTag using the MAC address stored in `server/mac.txt`. This is such that the address is untracked by any VCS in case the device is often changed. So be sure to have the MAC address of your SensorTag in the file, otherwise it won't work. It then reads temperature and humidity data from the SensorTag in the hardcoded interval (default 1 minute), stores the latest data in `latest.csv` and appends it to `history.csv`.
+
+It also has the option to send you a notification on Telegram, if you have a Telegram bot. To use this feature, create the file `server/telegram.txt` and have your bot's token on the first line, and your `chat_id` on the second line. Obtaining your id is a bit difficult, see [this answer](http://stackoverflow.com/a/31081941) for more information. If you have set it up correctly, it will send you a message using the given bot after 20 connection retries have failed.
+
 #### server
 `server/server.py` listens for incoming GET requests on default port 8081. On receiving `/latest`, it returns the latest measurements from `server/latest.csv` encoded as JSON. On receiving `/history`, it returns all the historical data from `server/history.csv`.
 
