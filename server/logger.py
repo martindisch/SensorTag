@@ -1,6 +1,7 @@
 import pygatt
 import time
 import os.path
+import requests
 
 def tempConvert(rawTemp):
     SCALE_LSB = 0.03125
@@ -28,6 +29,16 @@ def toCSV(list):
         line += str(item) + ","
     return line[:-1] + "\n"
 
+# prepare Telegram data
+hasTelegram = False
+if os.path.isfile("telegram.txt"):
+    with open("telegram.txt", 'r') as f:
+        lines = f.readlines()
+        token = lines[0].strip()
+        ownerId = lines[1].strip()
+        url = 'https://api.telegram.org/bot%s/' % token
+        hasTelegram = True
+
 with open("mac.txt", 'r') as f:
     MAC = f.readlines()[0].strip("\n")
 adapter = pygatt.GATTToolBackend()
@@ -49,6 +60,10 @@ try:
         with open("latest.csv", 'r') as f:
             timeTempHum = f.readlines()[0].strip("\n").split(",")
             lastHum = timeTempHum[2]
+            
+    # since we're connected, reset retry counter
+    with open("retry.txt", 'w') as f:
+        f.write("0")
     
     while True:
         valueTemp = device.char_read('f000aa01-0451-4000-b000-000000000000')
@@ -91,4 +106,26 @@ try:
         
         time.sleep(60)
 finally:
+    # attempt to load retry count if it exists
+    if os.path.isfile("retry.txt"):
+        with open("retry.txt", 'r') as f:
+            retries = int(f.readlines()[0].strip())
+    else:
+        retries = 0
+        
+    # notify user after some retries
+    if retries == 20 and hasTelegram:
+        message = "SensorTag is unreachable after 20 retries"
+        requests.post(
+            url + 'sendMessage',
+            params = dict(chat_id=ownerId, text=message))
+            
+    # don't let retry counter go over a certain limit
+    if retries > 999: retries = 999
+        
+    # write incremented retry count
+    with open("retry.txt", 'w') as f:
+        f.write(str(retries + 1))
+        
+    # stop pygatt adapter
     adapter.stop()

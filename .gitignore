@@ -9,3 +9,9 @@ replace
 
 # MAC address
 mac.txt
+
+# Telegram bot data
+telegram.txt
+
+# Retry count
+retry.txt
