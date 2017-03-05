@@ -89,7 +89,7 @@ try:
         temp = ambTemp
         humidity = resultsHum[1]
         # check if we have an erroneous humidity reading
-        if lastHum > -1 and humidity == 100:
+        if lastHum > -1 and humidity > 99:
             humidity = lastHum
         lastHum = humidity
         latest = [
