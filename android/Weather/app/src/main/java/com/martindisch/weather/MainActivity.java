@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,12 +30,13 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView mLatestTemp, mLatestHum;
     private SwipeRefreshLayout mSwipeContainer;
     private LineChart mChart;
     private RadioGroup mTimeframe;
+    private Button mLoadGraph;
     private byte[] mLastResponse = null;
     private int mTimeFrameSelection = ALL;
 
@@ -48,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
         mLatestHum = (TextView) findViewById(R.id.tvLatestHum);
         mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         mChart = (LineChart) findViewById(R.id.chart);
+        mLoadGraph = (Button) findViewById(R.id.bLoadGraph);
+        mLoadGraph.setOnClickListener(this);
 
         mTimeframe = (RadioGroup) findViewById(R.id.rgTimeframe);
         mTimeframe.check(R.id.rbAll);
@@ -65,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                         mTimeFrameSelection = DAY;
                         break;
                 }
-                if (mLastResponse != null) update(mLastResponse, mTimeFrameSelection);
+                if (mLastResponse != null) updateAll(mLastResponse, mTimeFrameSelection);
             }
         });
 
@@ -86,18 +91,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        fetchAndUpdate();
+        fetchAndUpdate(false);
     }
 
-    private void fetchAndUpdate() {
+    private void fetchAndUpdate(final boolean all) {
         mSwipeContainer.setRefreshing(true);
         AsyncHttpClient client = new AsyncHttpClient();
         client.setMaxRetriesAndTimeout(1, 500);
-        client.get("http://" + getString(R.string.IP) + "/history", new AsyncHttpResponseHandler() {
+        client.get("http://" + getString(R.string.IP) + (all ? "/history" : "/latest"), new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                mLastResponse = responseBody;
-                update(responseBody, mTimeFrameSelection);
+                if (all) {
+                    mLastResponse = responseBody;
+                    updateAll(responseBody, mTimeFrameSelection);
+                } else {
+                    updateLatest(responseBody);
+                }
             }
 
             @Override
@@ -108,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void update(final byte[] responseBody, final int timeframe) {
+    private void updateAll(final byte[] responseBody, final int timeframe) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -177,11 +186,22 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+    private void updateLatest(final byte[] responseBody) {
+        try {
+            String[] latest = Util.parseEntry(responseBody);
+            mLatestTemp.setText(String.format(getString(R.string.format_temp), latest[1]));
+            mLatestHum.setText(String.format(getString(R.string.format_hum), latest[2]));
+        } catch (IOException e) {
+            Toast.makeText(getApplicationContext(), getString(R.string.error_parsing), Toast.LENGTH_SHORT).show();
+        }
+        mSwipeContainer.setRefreshing(false);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                fetchAndUpdate();
+                fetchAndUpdate(false);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -192,5 +212,12 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.bLoadGraph) {
+            fetchAndUpdate(true);
+        }
     }
 }

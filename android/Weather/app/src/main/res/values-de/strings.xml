@@ -11,4 +11,5 @@
     <string name="all">Komplett</string>
     <string name="day">24 Stunden</string>
     <string name="week">7 Tage</string>
+    <string name="load_graph">Graph laden</string>
 </resources>

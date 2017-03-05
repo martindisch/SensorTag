@@ -43,8 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:baselineAlignedChildIndex="1"
-            android:orientation="vertical"
-            android:layout_alignBaseline="@id/tvLatestTemp">
+            android:orientation="vertical">
 
             <RadioButton
                 android:id="@+id/rbAll"
@@ -73,6 +72,14 @@
             android:layout_below="@id/tvLatestHum"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:text="@string/historic" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bLoadGraph"
+            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@id/tvHistoricTitle"
+            android:text="@string/load_graph"/>
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chart"
