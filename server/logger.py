@@ -28,6 +28,54 @@ def toCSV(list):
     for item in list:
         line += str(item) + ","
     return line[:-1] + "\n"
+    
+def tail(f, window=20):
+    """
+    Returns the last `window` lines of file `f` as a list.
+    """
+    if window == 0:
+        return []
+    BUFSIZ = 1024
+    f.seek(0, 2)
+    bytes = f.tell()
+    size = window + 1
+    block = -1
+    data = []
+    while size > 0 and bytes > 0:
+        if bytes - BUFSIZ > 0:
+            # Seek back one whole BUFSIZ
+            f.seek(block * BUFSIZ, 2)
+            # read BUFFER
+            data.insert(0, f.read(BUFSIZ))
+        else:
+            # file too small, start from begining
+            f.seek(0,0)
+            # only read what was not read
+            data.insert(0, f.read(bytes))
+        linesFound = data[0].count('\n')
+        size -= linesFound
+        bytes -= BUFSIZ
+        block -= 1
+    return ''.join(data).splitlines()[-window:]
+    
+def detect(cons_max):
+    hum = -1
+    count = 0
+    with open("history.csv", 'r') as f:
+        lines = tail(f, cons_max * 2)
+    occ = 0
+    for line in lines:
+        current = float(line.split(",")[2])
+        if current == hum and current < 97:
+            count += 1
+        else:
+            # process previous
+            if count >= cons_max:
+                occ = max(count, cons_max)
+            # reset
+            hum = current
+            count = 0
+    return occ
 
 # prepare Telegram data
 hasTelegram = False
@@ -42,6 +90,11 @@ if os.path.isfile("telegram.txt"):
 with open("mac.txt", 'r') as f:
     MAC = f.readlines()[0].strip("\n")
 adapter = pygatt.GATTToolBackend()
+
+# the number of consecutive humidity values that are critical if they're equal
+cons_max = 90
+# the counter for regular check of the last cons_max*2 humidity values
+cons_count = 0
 
 try:
     adapter.start()
@@ -93,7 +146,7 @@ try:
             humidity = lastHum
         lastHum = humidity
         latest = [
-            dateTime(), format(temp, ".2f"), format(humidity, ".2f")
+            dateTime(), format(temp, ".2f"), format(float(humidity), ".2f")
         ]
         
         # dump in latest
@@ -103,6 +156,20 @@ try:
         # dump in history
         with open("history.csv", 'a') as f:
             f.write(toCSV(latest))
+            
+        cons_count += 1
+        if cons_count == cons_max:
+            # check last cons_max*2 humidity values
+            cons_num = detect(cons_max)
+            # send message
+            if cons_num > 0 and hasTelegram:
+                message = ("%d consecutive humidity values.\n" % cons_num +
+                           "Battery may be low.")
+                requests.post(
+                    url + 'sendMessage',
+                    params = dict(chat_id=ownerId, text=message))
+            # reset counter
+            cons_count = 0
         
         time.sleep(60)
 finally:
