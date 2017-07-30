@@ -20,7 +20,7 @@ It also has the option to send you a notification on Telegram, if you have a Tel
 #### server
 `server/server.py` listens for incoming GET requests on default port 8081. On receiving `/latest`, it returns the latest measurements from `server/latest.csv` encoded as JSON. On receiving `/history`, it returns all the historical data from `server/history.csv`.
 
-Both the logger and server can be started by using `server/start.sh`, which creates a GNU screen session for each of them. This has the additional advantage of automatically attempting to reconnect to the SensorTag if the logger has exited due to losing the BLE connection.
+Both the logger and server can be started by using `server/start.sh`, which creates a GNU screen session for each of them. This has the additional advantage of automatically attempting to reconnect to the SensorTag if the logger has exited due to losing the BLE connection. Please not that you'll obviously have to have GNU screen installed, as well as a working Bluetooth stack. As far as python modules go, you'll need to use pip to install web.py, pygatt and pexpect.
 
 #### Android app
 `android/Weather` is an Android app using the service provided by the server to get and display current and historical data. The IP and port of the server are stored in the untracked string value file `creds.xml` as the string `R.string.IP` in order not to show up in VCS.
